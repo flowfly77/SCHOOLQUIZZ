@@ -427,7 +427,7 @@
             animation: float 3s ease-in-out infinite;
         }
     
-/* === PROFILS (v5 fix) === */
+/* === PROFILS (v6) === */
 .screen{display:none;} .screen.active{display:block;}
 #profile-screen{width:100%;}
 .profile-grid{display:grid;grid-template-columns:repeat(2,minmax(120px,1fr));gap:16px;justify-items:center;align-items:stretch;margin:16px auto 28px;width:100%;max-width:820px;padding:0 12px;}
@@ -452,7 +452,7 @@
     <!-- ÉCRAN 1 : MENU PRINCIPAL -->
     <!-- ========================================= -->
     
-<!-- === ÉCRAN PROFILS (v5) === -->
+<!-- === ÉCRAN PROFILS (v6) === -->
 <div id="profile-screen" class="screen active">
   <div class="header">
     <h1 class="floating">👥 Choisis ton Profil</h1>
@@ -471,7 +471,7 @@
   <div class="profile-tip">Astuce : ton choix est sauvegardé automatiquement.</div>
 </div>
 
-<div id="menu-screen" class="screen active">
+<div id="menu-screen" class="screen screen">
         <div class="header">
             <h1 class="floating">📚 Quizz Révisions 6ème</h1>
             <p class="subtitle">Choisis ta matière et teste tes connaissances !</p>
@@ -2636,41 +2636,125 @@
 
 <script>
 (function(){
-  var STORAGE_KEY='quizProfilesV5'; var SELECTED_KEY='quizSelectedPlayerV5';
-  var Store=(function(){try{var k='__t'+Math.random();localStorage.setItem(k,'1');localStorage.removeItem(k);return{get:function(a){return localStorage.getItem(a);},set:function(a,b){localStorage.setItem(a,b);},remove:function(a){localStorage.removeItem(a);}};}catch(e){var m={};return{get:function(a){return m[a]||null;},set:function(a,b){m[a]=b;},remove:function(a){delete m[a];}};})();
-  var PLAYER_INFOS={player1:{name:'Joueur 1',icon:'🏀'},player2:{name:'Joueur 2',icon:'❤️'},player3:{name:'Joueur 3',icon:'🎮'},player4:{name:'Joueur 4',icon:'💃'}};
+  var STORAGE_KEY='quizProfilesV6', SELECTED_KEY='quizSelectedPlayerV6';
+  var Store=(function(){ try{ var k='__t'+Math.random(); localStorage.setItem(k,'1'); localStorage.removeItem(k);
+    return {get:function(a){return localStorage.getItem(a);}, set:function(a,b){localStorage.setItem(a,b);}, remove:function(a){localStorage.removeItem(a);} };
+  }catch(e){ var mem={}; return {get:function(a){return mem[a]||null;}, set:function(a,b){mem[a]=b;}, remove:function(a){delete mem[a];} }; } })();
 
-  function defState(){var o={},k;for(k in PLAYER_INFOS){o[k]={id:k,name:PLAYER_INFOS[k].name,icon:PLAYER_INFOS[k].icon,totalPlayed:0,totalCorrect:0,bestByQuiz:{},badges:[]};}return{players:o};}
-  function load(){try{var s=Store.get(STORAGE_KEY);return s?JSON.parse(s):defState();}catch(e){return defState();}}
-  function save(st){try{Store.set(STORAGE_KEY,JSON.stringify(st));}catch(e){}}
-  function getSel(){try{return Store.get(SELECTED_KEY);}catch(e){return null;}}
-  function setSel(id){try{Store.set(SELECTED_KEY,id);}catch(e){}}
+  var INFO={
+    player1:{name:'Joueur 1',icon:'🏀'},
+    player2:{name:'Joueur 2',icon:'❤️'},
+    player3:{name:'Joueur 3',icon:'🎮'},
+    player4:{name:'Joueur 4',icon:'💃'}
+  };
 
-  function updUI(){var st=load(),k;for(k in st.players){var p=st.players[k],best=0,q;for(q in p.bestByQuiz){var v=+p.bestByQuiz[q]||0;if(v>best)best=v;}var el=document.getElementById('stats-'+k);if(el)el.textContent=p.totalPlayed+' quiz • '+best+'% meilleur';}
-    var sel=getSel();var cards=document.querySelectorAll('.profile-card');for(var i=0;i<cards.length;i++){var c=cards[i];if(c.getAttribute('data-player')===sel)c.classList.add('active');else c.classList.remove('active');}}
+  function defState(){ var p={},k; for(k in INFO){ p[k]={id:k,name:INFO[k].name,icon:INFO[k].icon,totalPlayed:0,totalCorrect:0,bestByQuiz:{},badges:[]}; } return {players:p}; }
+  function load(){ try{var s=Store.get(STORAGE_KEY); return s?JSON.parse(s):defState(); }catch(e){ return defState(); } }
+  function save(st){ try{ Store.set(STORAGE_KEY, JSON.stringify(st)); }catch(e){} }
+  function getSel(){ try{ return Store.get(SELECTED_KEY); }catch(e){ return null; } }
+  function setSel(id){ try{ Store.set(SELECTED_KEY, id); }catch(e){} }
 
-  function showProf(v){var ps=document.getElementById('profile-screen'),ms=document.getElementById('menu-screen');if(!ps||!ms)return;if(v){ps.classList.add('active');ms.classList.remove('active');}else{ps.classList.remove('active');ms.classList.add('active');}}
+  function updStatsUI(){
+    var st=load(), k;
+    for(k in st.players){
+      var p=st.players[k], best=0, q;
+      for(q in p.bestByQuiz){ var v=+p.bestByQuiz[q]||0; if(v>best) best=v; }
+      var el=document.getElementById('stats-'+k);
+      if(el) el.textContent = p.totalPlayed+' quiz • '+best+'% meilleur';
+    }
+    var sel=getSel();
+    var cards=document.querySelectorAll('.profile-card');
+    for(var i=0;i<cards.length;i++){ var c=cards[i];
+      if(c.getAttribute('data-player')===sel) c.classList.add('active'); else c.classList.remove('active');
+    }
+  }
 
-  window.__selectPlayer=function(id){setSel(id);updUI();};
-  window.__continueFromProfiles=function(){var sel=getSel()||'player1';setSel(sel);showProf(false);var tag=document.getElementById('current-player-tag');if(tag){var p=load().players[sel];tag.textContent='Profil : '+p.icon+' '+p.name;}};
-  window.__resetSelected=function(){var sel=getSel();if(!sel){alert("Sélectionne un profil d'abord.");return;}if(confirm('Réinitialiser ce profil ?')){var st=load();st.players[sel]={id:sel,name:PLAYER_INFOS[sel].name,icon:PLAYER_INFOS[sel].icon,totalPlayed:0,totalCorrect:0,bestByQuiz:{},badges:[]};save(st);updUI();alert('Profil réinitialisé ✅');}};
+  function showProfile(v){
+    var ps=document.getElementById('profile-screen');
+    var ms=document.getElementById('menu-screen');
+    if(!ps||!ms) return;
+    if(v){ ps.classList.add('active'); ms.classList.remove('active'); }
+    else { ps.classList.remove('active'); ms.classList.add('active'); }
+  }
 
-  var BADGES={first_quiz:{label:'Premier pas',icon:'🥇'},perfect:{label:'Parfait !',icon:'💯'},ten_correct:{label:'10 bonnes réponses',icon:'🔟'},champion:function(q){return{label:'Champion '+q,icon:'🏆'};}};
-  function grant(p,c){if(p.badges.indexOf(c)===-1){p.badges.push(c);return true;}return false;}
-  function showBadges(c){var w=document.getElementById('badge-earnings');if(!w)return;if(!c||!c.length){w.innerHTML='';return;}var s='',i;for(i=0;i<c.length;i++){var code=c[i],conf;if(code.indexOf('champion:')===0){conf=BADGES.champion(code.split(':')[1]);}else{conf=BADGES[code];}s+='<span class="badge-chip"><span class="icon">'+conf.icon+'</span>'+conf.label+'</span>';}w.innerHTML='<div style="margin-top:8px;text-align:center;"><div style="font-weight:800;margin-bottom:6px;">🎖️ Badges gagnés</div>'+s+'</div>';}
+  // Exposed handlers
+  window.__selectPlayer=function(id){ setSel(id); updStatsUI(); };
+  window.__continueFromProfiles=function(){
+    var sel=getSel()||'player1'; setSel(sel); showProfile(false);
+    var tag=document.getElementById('current-player-tag');
+    if(tag){ var p=load().players[sel]; tag.textContent='Profil : '+p.icon+' '+p.name; }
+  };
+  window.__resetSelected=function(){
+    var sel=getSel(); if(!sel){ alert("Sélectionne un profil d'abord."); return; }
+    if(confirm('Réinitialiser ce profil ?')){
+      var st=load();
+      st.players[sel]={id:sel,name:INFO[sel].name,icon:INFO[sel].icon,totalPlayed:0,totalCorrect:0,bestByQuiz:{},badges:[]};
+      save(st); updStatsUI(); alert('Profil réinitialisé ✅');
+    }
+  };
 
-  function afterQuiz(pct,correct,total,qk){var sel=getSel();if(!sel)return;var st=load(),p=st.players[sel];p.totalPlayed+=1;p.totalCorrect+=correct;var prev=+p.bestByQuiz[qk]||0;if(pct>prev)p.bestByQuiz[qk]=pct;var n=[];if(p.totalPlayed>=1&&grant(p,'first_quiz'))n.push('first_quiz');if(pct===100&&grant(p,'perfect'))n.push('perfect');if(correct>=10&&grant(p,'ten_correct'))n.push('ten_correct');if(pct>=90&&grant(p,'champion:'+qk))n.push('champion:'+qk);save(st);updUI();showBadges(n);}
+  // Badges
+  var BAD={first_quiz:{label:'Premier pas',icon:'🥇'}, perfect:{label:'Parfait !',icon:'💯'}, ten_correct:{label:'10 bonnes réponses',icon:'🔟'}, champion:function(q){return {label:'Champion '+q,icon:'🏆'};}};
+  function grant(p,c){ if(p.badges.indexOf(c)===-1){ p.badges.push(c); return true; } return false; }
+  function showBadges(codes){
+    var wrap=document.getElementById('badge-earnings'); if(!wrap) return;
+    if(!codes||!codes.length){ wrap.innerHTML=''; return; }
+    var chips='', i;
+    for(i=0;i<codes.length;i++){ var code=codes[i], conf;
+      if(code.indexOf('champion:')===0){ conf=BAD.champion(code.split(':')[1]); }
+      else { conf=BAD[code]; }
+      chips += '<span class="badge-chip"><span class="icon">'+conf.icon+'</span>'+conf.label+'</span>';
+    }
+    wrap.innerHTML = '<div style="margin-top:8px;text-align:center;"><div style="font-weight:800;margin-bottom:6px;">🎖️ Badges gagnés</div>'+chips+'</div>';
+  }
+  function afterQuiz(pct, correct, total, qk){
+    var sel=getSel(); if(!sel) return;
+    var st=load(), p=st.players[sel];
+    p.totalPlayed += 1; p.totalCorrect += correct;
+    var prev=+p.bestByQuiz[qk]||0; if(pct>prev) p.bestByQuiz[qk]=pct;
+    var newly=[];
+    if(p.totalPlayed>=1 && grant(p,'first_quiz')) newly.push('first_quiz');
+    if(pct===100 && grant(p,'perfect')) newly.push('perfect');
+    if(correct>=10 && grant(p,'ten_correct')) newly.push('ten_correct');
+    if(pct>=90 && grant(p,'champion:'+qk)) newly.push('champion:'+qk);
+    save(st); updStatsUI(); showBadges(newly);
+  }
 
-  function hookResults(){var rs=document.getElementById('results-screen');if(!rs)return;var obs=new MutationObserver(function(){if(rs.classList.contains('active')){var fs=document.getElementById('final-score');if(!fs)return;var t=fs.textContent||'';var m=t.match(/(\\d+)\\s*\\/\\s*(\\d+)/);if(m){var c=parseInt(m[1],10),tot=parseInt(m[2],10);var pct=Math.round((c/tot)*100);afterQuiz(pct,c,tot,window.__lastQuizKey||'custom');}}});obs.observe(rs,{attributes:true,attributeFilter:['class']});}
+  // Hook on results
+  function hookResults(){
+    var rs=document.getElementById('results-screen'); if(!rs) return;
+    var obs=new MutationObserver(function(){
+      if(rs.classList.contains('active')){
+        var fs=document.getElementById('final-score'); if(!fs) return;
+        var txt=fs.textContent||''; var m=txt.match(/(\d+)\s*\/\s*(\d+)/);
+        if(m){ var c=parseInt(m[1],10), t=parseInt(m[2],10); var pct=Math.round((c/t)*100);
+          afterQuiz(pct, c, t, window.__lastQuizKey||'custom');
+        }
+      }
+    });
+    obs.observe(rs,{attributes:true,attributeFilter:['class']});
+  }
 
-  function addSwitch(){var h=document.querySelector('#menu-screen .header');if(!h)return;var b=document.createElement('button');b.textContent='Changer de profil';b.className='btn btn-menu';b.style.marginTop='12px';b.onclick=function(){showProf(true);};h.appendChild(b);var tag=document.createElement('div');tag.id='current-player-tag';tag.style.marginTop='8px';tag.style.fontWeight='800';tag.style.color='#111827';tag.textContent='Aucun profil sélectionné';h.appendChild(tag);}
+  function addSwitcher(){
+    var header=document.querySelector('#menu-screen .header'); if(!header) return;
+    var btn=document.createElement('button'); btn.textContent='Changer de profil'; btn.className='btn btn-menu'; btn.style.marginTop='12px';
+    btn.onclick=function(){ showProfile(true); }; header.appendChild(btn);
+    var tag=document.createElement('div'); tag.style.marginTop='8px'; tag.style.fontWeight='800'; tag.style.color='#111827'; tag.id='current-player-tag'; tag.textContent='Aucun profil sélectionné'; header.appendChild(tag);
+  }
 
-  function startOnProfiles(){var ps=document.getElementById('profile-screen'),ms=document.getElementById('menu-screen');if(ps&&ms){ps.classList.add('active');ms.classList.remove('active');}}
+  function startOnProfiles(){
+    var ps=document.getElementById('profile-screen'), ms=document.getElementById('menu-screen');
+    if(ps&&ms){ ps.classList.add('active'); ms.classList.remove('active'); }
+  }
 
-  function ready(fn){if(document.readyState==='complete'||document.readyState==='interactive'){setTimeout(fn,0);}else{document.addEventListener('DOMContentLoaded',fn);}}
-  ready(function(){save(load());updUI();hookResults();addSwitch();startOnProfiles();});
+  function ready(fn){ if(document.readyState==='complete'||document.readyState==='interactive'){ setTimeout(fn,0); } else { document.addEventListener('DOMContentLoaded', fn); } }
+  ready(function(){ save(load()); updStatsUI(); hookResults(); addSwitcher(); startOnProfiles(); });
 
-  (function(){var orig=window.startQuiz;window.startQuiz=function(q){window.__lastQuizKey=q||'custom';if(!getSel()){showProf(true);alert('Sélectionne d’abord un profil.');return;}if(typeof orig==='function'){return orig.apply(this,arguments);}};})();
+  // Wrap startQuiz to capture key and enforce profile selection
+  (function(){ var orig=window.startQuiz; window.startQuiz=function(q){ window.__lastQuizKey=q||'custom';
+    if(!getSel()){ showProfile(true); alert('Sélectionne d’abord un profil.'); return; }
+    if(typeof orig==='function'){ return orig.apply(this, arguments); }
+  }; })();
 })();
 </script>
 
