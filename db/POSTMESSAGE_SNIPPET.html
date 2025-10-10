@@ -1,0 +1,13 @@
+<!-- À insérer dans V3 à la fin d'un quiz (quand tu connais score et total) -->
+<script>
+  function envoyerResultatQuiz(key, bonnesReponses, totalQuestions, titre) {
+    window.parent.postMessage({
+      type: 'quiz-finished',
+      key: key,                  // ex: 'anglais_verbes'
+      correct: bonnesReponses,   // ex: 8
+      total: totalQuestions,     // ex: 10
+      title: titre || ''         // ex: 'Anglais — Verbes (6e)'
+    }, '*');
+  }
+  // Exemple d'appel: envoyerResultatQuiz('anglais_verbes', score, nbQuestions, 'Anglais — Verbes (6e)');
+</script>

@@ -1,102 +1,84 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>QUIZZ 6e — Connexion par e‑mail (sans mot de passe)</title>
-<style>
-  :root{--bg:#0f172a;--card:#ffffff;--ink:#0b1220;--muted:#6b7280;--brand:#667eea;--ok:#10b981;}
-  *{box-sizing:border-box} body{margin:0;background:linear-gradient(135deg,#0f172a,#1f2937);font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:#111827;}
-  .container{max-width:760px;margin:0 auto;padding:24px}
-  .card{background:var(--card);border-radius:20px;box-shadow:0 10px 30px rgba(0,0,0,.18);padding:24px}
-  h1{color:#fff;margin:0 0 10px} p.lead{color:#cbd5e1;margin:0 0 16px}
-  input[type="email"]{width:100%;padding:12px 14px;border-radius:12px;border:2px solid #e5e7eb;font-weight:700}
-  .row{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
-  .btn{border:none;border-radius:12px;padding:12px 16px;font-weight:800;cursor:pointer} .btn-brand{background:var(--brand);color:#fff}
-  .muted{color:var(--muted);font-size:13px;margin-top:8px} #log{margin-top:14px;font-size:13px;white-space:pre-wrap}
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>QUIZZ 6e — Connexion e‑mail + Profils + V3</title>
+  <link rel="stylesheet" href="./css/style.css" />
 </head>
 <body>
   <div class="container">
-    <h1>Connexion par e‑mail</h1>
-    <p class="lead">Saisis ton adresse e‑mail, nous t’envoyons un <strong>lien magique</strong>. Aucun mot de passe.</p>
-    <div class="card">
-      <input id="email" type="email" placeholder="ton@email.fr" />
-      <div class="row">
-        <button class="btn btn-brand" onclick="sendLink()">Recevoir le lien</button>
+    <div class="header">
+      <h1>QUIZZ 6e — Connexion e‑mail + Profils + V3</h1>
+      <p class="muted">Auth e‑mail (lien magique), profils Firestore par utilisateur, V3 intégré.</p>
+    </div>
+
+    <div id="topbar" class="topbar" style="display:none">
+      <div class="left"><span id="who" class="pill">Non connecté</span></div>
+      <div class="right">
+        <button class="btn btn-ghost" onclick="window.UI.showProfiles()">Profils</button>
+        <button class="btn btn-danger" onclick="window.AUTH.logout()">Se déconnecter</button>
       </div>
-      <div id="msg" class="muted"></div>
-      <div id="log" class="muted"></div>
+    </div>
+
+    <div id="auth-screen" class="screen active">
+      <div class="card">
+        <h2>Connexion par e‑mail (lien magique)</h2>
+        <div class="row" style="margin-top:8px">
+          <input id="email" type="email" placeholder="ton@email.fr" autocomplete="email" />
+          <button class="btn btn-brand" onclick="window.AUTH.sendLink()">Recevoir le lien</button>
+        </div>
+        <p id="auth-msg" class="muted" style="margin-top:8px"></p>
+      </div>
+    </div>
+
+    <div id="profiles-screen" class="screen">
+      <div class="card">
+        <h2>Vos profils</h2>
+        <p class="muted">Chaque utilisateur connecté voit uniquement ses profils et ses stats.</p>
+        <div class="profile-grid">
+          <div class="profile-card" data-id="player1" onclick="window.PROFILES.selectProfile('player1')">
+            <div class="emoji">🏀</div>
+            <div class="name" role="button" onclick="window.PROFILES.renameProfile(event,'player1')">Joueur 1</div>
+            <div class="stats" id="stats-player1">0 quiz • 0% meilleur</div>
+          </div>
+          <div class="profile-card" data-id="player2" onclick="window.PROFILES.selectProfile('player2')">
+            <div class="emoji">❤️</div>
+            <div class="name" role="button" onclick="window.PROFILES.renameProfile(event,'player2')">Joueur 2</div>
+            <div class="stats" id="stats-player2">0 quiz • 0% meilleur</div>
+          </div>
+          <div class="profile-card" data-id="player3" onclick="window.PROFILES.selectProfile('player3')">
+            <div class="emoji">🎮</div>
+            <div class="name" role="button" onclick="window.PROFILES.renameProfile(event,'player3')">Joueur 3</div>
+            <div class="stats" id="stats-player3">0 quiz • 0% meilleur</div>
+          </div>
+          <div class="profile-card" data-id="player4" onclick="window.PROFILES.selectProfile('player4')">
+            <div class="emoji">💃</div>
+            <div class="name" role="button" onclick="window.PROFILES.renameProfile(event,'player4')">Joueur 4</div>
+            <div class="stats" id="stats-player4">0 quiz • 0% meilleur</div>
+          </div>
+        </div>
+        <div class="actions">
+          <button class="btn btn-brand" onclick="window.UI.goToApp()">Continuer →</button>
+          <button class="btn" onclick="window.PROFILES.resetCurrentProfile()">Réinitialiser le profil</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="app-screen" class="screen">
+      <div class="card" style="padding:0;border-radius:16px;overflow:hidden">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:#111827;color:#e5e7eb">
+          <div style="font-weight:800">Menu V3</div>
+          <div style="display:flex;gap:8px">
+            <button class="btn btn-ghost" onclick="window.UI.showProfiles()">Changer de profil</button>
+            <button class="btn btn-danger" onclick="window.AUTH.logout()">Se déconnecter</button>
+          </div>
+        </div>
+        <iframe id="v3app" title="QUIZZ 6e V3" src="./v3.html" sandbox="allow-scripts allow-same-origin allow-popups allow-forms"></iframe>
+      </div>
     </div>
   </div>
 
-  <script type="module">
-    const firebaseConfig = {
-  apiKey: "AIzaSyAZ2ZGUA4LYFqWpFTEGSwnKod3HhMKjrT4",
-  authDomain: "quizz-6eme.firebaseapp.com",
-  projectId: "quizz-6eme",
-  storageBucket: "quizz-6eme.firebasestorage.app",
-  messagingSenderId: "862069232761",
-  appId: "1:862069232761:web:5c67c65884e0b888e5f0a8",
-  measurementId: "G-L7W3Y46Y6T"
-};
-
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getAuth, isSignInWithEmailLink, sendSignInLinkToEmail, signInWithEmailLink, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-
-    const log = (t)=>{ const el=document.getElementById('log'); el.textContent += t+"\n"; console.log(t); };
-    const msg = (t)=>{ document.getElementById('msg').textContent=t; };
-
-    // 1) Envoyer le lien magique
-    window.sendLink = async function(){
-      const email = document.getElementById('email').value.trim();
-      if(!email){ alert('Entre une adresse e‑mail'); return; }
-      // URL de retour : la page elle‑même (GitHub Pages ou locale)
-      const url = window.location.origin + window.location.pathname;
-      const actionCodeSettings = {
-        url: url,
-        handleCodeInApp: true,
-      };
-      try{
-        await sendSignInLinkToEmail(auth, email, actionCodeSettings);
-        window.localStorage.setItem('emailForSignIn', email);
-        msg("Lien envoyé à "+email+". Ouvre l’e‑mail et clique sur le lien.");
-        log("sendSignInLinkToEmail OK vers "+email+" (return URL="+url+")");
-      }catch(e){
-        msg("Erreur: "+e.message);
-        log("ERR sendSignInLinkToEmail: "+e.code+" "+e.message);
-        alert(e.message);
-      }
-    };
-
-    // 2) Si on revient via le lien, finaliser la connexion
-    async function completeSignInFromLink(){
-      try{
-        if(isSignInWithEmailLink(auth, window.location.href)){
-          let email = window.localStorage.getItem('emailForSignIn');
-          if(!email) email = window.prompt('Confirme ton e‑mail pour te connecter');
-          const cred = await signInWithEmailLink(auth, email, window.location.href);
-          window.localStorage.removeItem('emailForSignIn');
-          msg("Connecté en tant que "+(cred.user.email||'utilisateur'));
-          log("signInWithEmailLink OK pour "+(cred.user.email||cred.user.uid));
-          // Nettoie l’URL (supprime les paramètres oobCode…)
-          window.history.replaceState({}, document.title, window.location.pathname);
-        }
-      }catch(e){
-        msg("Erreur de connexion: "+e.message);
-        log("ERR signInWithEmailLink: "+e.code+" "+e.message);
-        alert(e.message);
-      }
-    }
-    await completeSignInFromLink();
-
-    onAuthStateChanged(auth, (user)=>{
-      if(user) msg("Connecté: "+(user.email||user.uid));
-      else msg("");
-    });
-  </script>
+  <script type="module" src="./js/main.js"></script>
 </body>
 </html>
