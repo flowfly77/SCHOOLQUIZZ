@@ -427,37 +427,11 @@
             animation: float 3s ease-in-out infinite;
         }
     
-/* === PROFILS & BADGES (RECODE v4) === */
-.screen{display:none;}
-.screen.active{display:block;}
-
-#profile-screen{width:100%; overflow:visible;}
-
-.profile-grid {
-  display:grid;
-  grid-template-columns: repeat(2, minmax(120px, 1fr));
-  gap:16px;
-  justify-items:center;
-  align-items:stretch;
-  margin:16px auto 28px;
-  width:100%;
-  max-width: 820px;
-  padding: 0 12px;
-}
-
-.profile-card{
-  background:#fff;
-  border-radius:20px;
-  padding:18px;
-  text-align:center;
-  cursor:pointer;
-  transition:all .25s ease;
-  border:3px solid transparent;
-  box-shadow:0 4px 12px rgba(0,0,0,.08);
-  user-select:none;
-  width: 100%;
-  max-width: 340px;
-}
+/* === PROFILS (v5 fix) === */
+.screen{display:none;} .screen.active{display:block;}
+#profile-screen{width:100%;}
+.profile-grid{display:grid;grid-template-columns:repeat(2,minmax(120px,1fr));gap:16px;justify-items:center;align-items:stretch;margin:16px auto 28px;width:100%;max-width:820px;padding:0 12px;}
+.profile-card{background:#fff;border-radius:20px;padding:18px;text-align:center;cursor:pointer;transition:all .25s ease;border:3px solid transparent;box-shadow:0 4px 12px rgba(0,0,0,.08);user-select:none;width:100%;max-width:340px;}
 .profile-card:hover{transform:translateY(-3px) scale(1.015);border-color:#667eea;}
 .profile-card.active{border-color:#10b981;box-shadow:0 0 0 3px rgba(16,185,129,.25) inset;}
 .profile-emoji{font-size:54px;display:block;margin-bottom:10px;}
@@ -465,21 +439,11 @@
 .profile-stats{margin-top:6px;font-size:13px;color:#6b7280;}
 .profile-actions{display:flex;gap:10px;margin-top:8px;max-width:820px;margin-left:auto;margin-right:auto;padding:0 12px;}
 .profile-actions button{flex:1;border:none;border-radius:12px;padding:12px;font-weight:700;cursor:pointer;}
-.btn-primary{background:#667eea;color:#fff;}
-.btn-secondary{background:#e5e7eb;color:#111827;}
-.badge-chip{display:inline-flex;align-items:center;gap:6px;background:#f3f4f6;color:#111827;border-radius:999px;padding:6px 10px;font-size:12px;font-weight:700;margin:4px;border:2px solid #e5e7eb;}
-.badge-chip .icon{font-size:16px;}
+.btn-primary{background:#667eea;color:#fff;} .btn-secondary{background:#e5e7eb;color:#111827;}
 #badge-earnings{margin-top:18px;}
-.profile-tip{background:#e3f7c3;border:2px solid #a3e635;padding:12px;border-radius:14px;color:#3f6212;font-weight:700;text-align:center;margin: 10px 12px 0;}
-
-@media (max-width: 640px){
-  .profile-grid{ grid-template-columns: repeat(2, 1fr); gap:12px; padding:0 10px; }
-  .profile-card{ max-width:100%; padding:14px; }
-  .profile-emoji{ font-size:44px; }
-}
-@media (max-width: 420px){
-  .profile-grid{ grid-template-columns: 1fr; gap:12px; }
-}
+.profile-tip{background:#e3f7c3;border:2px solid #a3e635;padding:12px;border-radius:14px;color:#3f6212;font-weight:700;text-align:center;margin:10px 12px 0;}
+@media (max-width:640px){.profile-grid{grid-template-columns:repeat(2,1fr);gap:12px;padding:0 10px;}.profile-card{max-width:100%;padding:14px;}.profile-emoji{font-size:44px;}}
+@media (max-width:420px){.profile-grid{grid-template-columns:1fr;gap:12px;}}
 
 </style>
 </head>
@@ -488,38 +452,18 @@
     <!-- ÉCRAN 1 : MENU PRINCIPAL -->
     <!-- ========================================= -->
     
-<!-- ========================================= -->
-<!-- ÉCRAN 1 : PROFILS (RECODE v4) -->
-<!-- ========================================= -->
+<!-- === ÉCRAN PROFILS (v5) === -->
 <div id="profile-screen" class="screen active">
   <div class="header">
     <h1 class="floating">👥 Choisis ton Profil</h1>
     <p class="subtitle">4 emplacements persistants — stats et badges conservés</p>
   </div>
-
   <div class="profile-grid">
-    <div class="profile-card" data-player="player1" onclick="__selectPlayer('player1')">
-      <span class="profile-emoji">🏀</span>
-      <div class="profile-name">Joueur 1</div>
-      <div class="profile-stats" id="stats-player1">0 quiz • 0% meilleur</div>
-    </div>
-    <div class="profile-card" data-player="player2" onclick="__selectPlayer('player2')">
-      <span class="profile-emoji">❤️</span>
-      <div class="profile-name">Joueur 2</div>
-      <div class="profile-stats" id="stats-player2">0 quiz • 0% meilleur</div>
-    </div>
-    <div class="profile-card" data-player="player3" onclick="__selectPlayer('player3')">
-      <span class="profile-emoji">🎮</span>
-      <div class="profile-name">Joueur 3</div>
-      <div class="profile-stats" id="stats-player3">0 quiz • 0% meilleur</div>
-    </div>
-    <div class="profile-card" data-player="player4" onclick="__selectPlayer('player4')">
-      <span class="profile-emoji">💃</span>
-      <div class="profile-name">Joueur 4</div>
-      <div class="profile-stats" id="stats-player4">0 quiz • 0% meilleur</div>
-    </div>
+    <div class="profile-card" data-player="player1" onclick="__selectPlayer('player1')"><span class="profile-emoji">🏀</span><div class="profile-name">Joueur 1</div><div class="profile-stats" id="stats-player1">0 quiz • 0% meilleur</div></div>
+    <div class="profile-card" data-player="player2" onclick="__selectPlayer('player2')"><span class="profile-emoji">❤️</span><div class="profile-name">Joueur 2</div><div class="profile-stats" id="stats-player2">0 quiz • 0% meilleur</div></div>
+    <div class="profile-card" data-player="player3" onclick="__selectPlayer('player3')"><span class="profile-emoji">🎮</span><div class="profile-name">Joueur 3</div><div class="profile-stats" id="stats-player3">0 quiz • 0% meilleur</div></div>
+    <div class="profile-card" data-player="player4" onclick="__selectPlayer('player4')"><span class="profile-emoji">💃</span><div class="profile-name">Joueur 4</div><div class="profile-stats" id="stats-player4">0 quiz • 0% meilleur</div></div>
   </div>
-
   <div class="profile-actions">
     <button class="btn-primary" onclick="__continueFromProfiles()">Continuer →</button>
     <button class="btn-secondary" onclick="__resetSelected()">Réinitialiser le profil</button>
@@ -527,7 +471,7 @@
   <div class="profile-tip">Astuce : ton choix est sauvegardé automatiquement.</div>
 </div>
 
-<div id="menu-screen" class="screen">
+<div id="menu-screen" class="screen active">
         <div class="header">
             <h1 class="floating">📚 Quizz Révisions 6ème</h1>
             <p class="subtitle">Choisis ta matière et teste tes connaissances !</p>
@@ -2692,31 +2636,42 @@
 
 <script>
 (function(){
-  var STORAGE_KEY='quizProfilesV4';
-  var SELECTED_KEY='quizSelectedPlayerV4';
-  var Store=(function(){try{var k='__p'+Math.random();localStorage.setItem(k,'1');localStorage.removeItem(k);return{get:function(a){return localStorage.getItem(a);},set:function(a,b){localStorage.setItem(a,b);},remove:function(a){localStorage.removeItem(a);}}}catch(e){var m={};return{get:function(a){return m[a]||null;},set:function(a,b){m[a]=b;},remove:function(a){delete m[a];}}})(); 
+  var STORAGE_KEY='quizProfilesV5'; var SELECTED_KEY='quizSelectedPlayerV5';
+  var Store=(function(){try{var k='__t'+Math.random();localStorage.setItem(k,'1');localStorage.removeItem(k);return{get:function(a){return localStorage.getItem(a);},set:function(a,b){localStorage.setItem(a,b);},remove:function(a){localStorage.removeItem(a);}};}catch(e){var m={};return{get:function(a){return m[a]||null;},set:function(a,b){m[a]=b;},remove:function(a){delete m[a];}};})();
   var PLAYER_INFOS={player1:{name:'Joueur 1',icon:'🏀'},player2:{name:'Joueur 2',icon:'❤️'},player3:{name:'Joueur 3',icon:'🎮'},player4:{name:'Joueur 4',icon:'💃'}};
-  function defaultState(){var p={},k;for(k in PLAYER_INFOS){p[k]={id:k,name:PLAYER_INFOS[k].name,icon:PLAYER_INFOS[k].icon,totalPlayed:0,totalCorrect:0,bestByQuiz:{},badges:[]};}return{players:p,schema:'v4'};}
-  function loadState(){try{var r=Store.get(STORAGE_KEY);return r?JSON.parse(r):defaultState();}catch(e){return defaultState();}}
-  function saveState(s){try{Store.set(STORAGE_KEY,JSON.stringify(s));}catch(e){}}
-  function getSelected(){try{return Store.get(SELECTED_KEY);}catch(e){return null;}}
-  function setSelected(id){try{Store.set(SELECTED_KEY,id);}catch(e){}}
-  function updateProfileStatsUI(){var st=loadState(),k;for(k in st.players){var p=st.players[k],best=0,q;for(q in p.bestByQuiz){var v=Number(p.bestByQuiz[q]||0);if(v>best)best=v;}var el=document.getElementById('stats-'+k);if(el)el.textContent=p.totalPlayed+' quiz • '+best+'% meilleur';}var sel=getSelected();var cards=document.querySelectorAll('.profile-card');for(var i=0;i<cards.length;i++){var c=cards[i];if(c.getAttribute('data-player')===sel)c.classList.add('active');else c.classList.remove('active');}}
-  function showProfileScreen(v){var ps=document.getElementById('profile-screen');var ms=document.getElementById('menu-screen');if(!ps||!ms)return;if(v){ps.classList.add('active');ms.classList.remove('active');}else{ps.classList.remove('active');ms.classList.add('active');}}
-  window.__selectPlayer=function(id){setSelected(id);updateProfileStatsUI();};
-  window.__continueFromProfiles=function(){var sel=getSelected()||'player1';setSelected(sel);showProfileScreen(false);var tag=document.getElementById('current-player-tag');if(tag){var p=loadState().players[sel];tag.textContent='Profil : '+p.icon+' '+p.name;}};
-  window.__resetSelected=function(){var sel=getSelected();if(!sel){alert("Sélectionne un profil d'abord.");return;}if(confirm('Réinitialiser toutes les stats et badges de ce profil ?')){var st=loadState();st.players[sel]={id:sel,name:PLAYER_INFOS[sel].name,icon:PLAYER_INFOS[sel].icon,totalPlayed:0,totalCorrect:0,bestByQuiz:{},badges:[]};saveState(st);updateProfileStatsUI();alert('Profil réinitialisé ✅');}};
-  var BADGE_DEFS={first_quiz:{label:'Premier pas',icon:'🥇'},perfect:{label:'Parfait !',icon:'💯'},ten_correct:{label:'10 bonnes réponses',icon:'🔟'},champion:function(q){return{label:'Champion '+q,icon:'🏆'};}};
-  function grantBadge(p,code){if(p.badges.indexOf(code)===-1){p.badges.push(code);return true;}return false;}
-  function renderNewBadges(c){var w=document.getElementById('badge-earnings');if(!w)return;if(!c||!c.length){w.innerHTML='';return;}var s='',i;for(i=0;i<c.length;i++){var code=c[i],conf;if(code.indexOf('champion:')===0){var q=code.split(':')[1];conf=BADGE_DEFS.champion(q);}else{conf=BADGE_DEFS[code];}s+='<span class="badge-chip"><span class="icon">'+conf.icon+'</span>'+conf.label+'</span>';}w.innerHTML='<div style="margin-top:8px;text-align:center;"><div style="font-weight:800;margin-bottom:6px;">🎖️ Badges gagnés</div>'+s+'</div>';}
-  function updateStatsAfterQuiz(pct,correct,total,key){var sel=getSelected();if(!sel)return;var st=loadState(),p=st.players[sel];p.totalPlayed+=1;p.totalCorrect+=correct;var prev=Number(p.bestByQuiz[key]||0);if(pct>prev)p.bestByQuiz[key]=pct;var newly=[];if(p.totalPlayed>=1&&grantBadge(p,'first_quiz'))newly.push('first_quiz');if(pct===100&&grantBadge(p,'perfect'))newly.push('perfect');if(correct>=10&&grantBadge(p,'ten_correct'))newly.push('ten_correct');if(pct>=90&&grantBadge(p,'champion:'+key))newly.push('champion:'+key);saveState(st);updateProfileStatsUI();renderNewBadges(newly);}
-  function initResultsObserver(){var rs=document.getElementById('results-screen');if(!rs)return;var obs=new MutationObserver(function(){if(rs.classList.contains('active')){var fs=document.getElementById('final-score');if(!fs)return;var txt=fs.textContent||'';var m=txt.match(/(\d+)\s*\/\s*(\d+)/);if(m){var c=parseInt(m[1],10),t=parseInt(m[2],10);var pct=Math.round((c/t)*100);updateStatsAfterQuiz(pct,c,t,window.__lastQuizKey||'custom');}}});obs.observe(rs,{attributes:true,attributeFilter:['class']});}
-  function addProfileSwitcher(){var header=document.querySelector('#menu-screen .header');if(!header)return;var btn=document.createElement('button');btn.textContent='Changer de profil';btn.className='btn btn-menu';btn.style.marginTop='12px';btn.onclick=function(){showProfileScreen(true);};header.appendChild(btn);var tag=document.createElement('div');tag.style.marginTop='8px';tag.style.fontWeight='800';tag.style.color='#111827';tag.id='current-player-tag';header.appendChild(tag);tag.textContent='Aucun profil sélectionné';}
-  function ensureFirstScreen(){var ps=document.getElementById('profile-screen');var ms=document.getElementById('menu-screen');if(!ps||!ms)return;ps.classList.add('active');ms.classList.remove('active');}
-  function ready(f){if(document.readyState==='complete'||document.readyState==='interactive'){setTimeout(f,0);}else{document.addEventListener('DOMContentLoaded',f);}}
-  ready(function(){saveState(loadState());updateProfileStatsUI();initResultsObserver();addProfileSwitcher();ensureFirstScreen();});
-  (function(){var orig=window.startQuiz;window.startQuiz=function(k){window.__lastQuizKey=k||'custom';if(!getSelected()){showProfileScreen(true);alert('Sélectionne d’abord un profil.');return;}if(typeof orig==='function'){return orig.apply(this,arguments);}};})();
-})(); 
+
+  function defState(){var o={},k;for(k in PLAYER_INFOS){o[k]={id:k,name:PLAYER_INFOS[k].name,icon:PLAYER_INFOS[k].icon,totalPlayed:0,totalCorrect:0,bestByQuiz:{},badges:[]};}return{players:o};}
+  function load(){try{var s=Store.get(STORAGE_KEY);return s?JSON.parse(s):defState();}catch(e){return defState();}}
+  function save(st){try{Store.set(STORAGE_KEY,JSON.stringify(st));}catch(e){}}
+  function getSel(){try{return Store.get(SELECTED_KEY);}catch(e){return null;}}
+  function setSel(id){try{Store.set(SELECTED_KEY,id);}catch(e){}}
+
+  function updUI(){var st=load(),k;for(k in st.players){var p=st.players[k],best=0,q;for(q in p.bestByQuiz){var v=+p.bestByQuiz[q]||0;if(v>best)best=v;}var el=document.getElementById('stats-'+k);if(el)el.textContent=p.totalPlayed+' quiz • '+best+'% meilleur';}
+    var sel=getSel();var cards=document.querySelectorAll('.profile-card');for(var i=0;i<cards.length;i++){var c=cards[i];if(c.getAttribute('data-player')===sel)c.classList.add('active');else c.classList.remove('active');}}
+
+  function showProf(v){var ps=document.getElementById('profile-screen'),ms=document.getElementById('menu-screen');if(!ps||!ms)return;if(v){ps.classList.add('active');ms.classList.remove('active');}else{ps.classList.remove('active');ms.classList.add('active');}}
+
+  window.__selectPlayer=function(id){setSel(id);updUI();};
+  window.__continueFromProfiles=function(){var sel=getSel()||'player1';setSel(sel);showProf(false);var tag=document.getElementById('current-player-tag');if(tag){var p=load().players[sel];tag.textContent='Profil : '+p.icon+' '+p.name;}};
+  window.__resetSelected=function(){var sel=getSel();if(!sel){alert("Sélectionne un profil d'abord.");return;}if(confirm('Réinitialiser ce profil ?')){var st=load();st.players[sel]={id:sel,name:PLAYER_INFOS[sel].name,icon:PLAYER_INFOS[sel].icon,totalPlayed:0,totalCorrect:0,bestByQuiz:{},badges:[]};save(st);updUI();alert('Profil réinitialisé ✅');}};
+
+  var BADGES={first_quiz:{label:'Premier pas',icon:'🥇'},perfect:{label:'Parfait !',icon:'💯'},ten_correct:{label:'10 bonnes réponses',icon:'🔟'},champion:function(q){return{label:'Champion '+q,icon:'🏆'};}};
+  function grant(p,c){if(p.badges.indexOf(c)===-1){p.badges.push(c);return true;}return false;}
+  function showBadges(c){var w=document.getElementById('badge-earnings');if(!w)return;if(!c||!c.length){w.innerHTML='';return;}var s='',i;for(i=0;i<c.length;i++){var code=c[i],conf;if(code.indexOf('champion:')===0){conf=BADGES.champion(code.split(':')[1]);}else{conf=BADGES[code];}s+='<span class="badge-chip"><span class="icon">'+conf.icon+'</span>'+conf.label+'</span>';}w.innerHTML='<div style="margin-top:8px;text-align:center;"><div style="font-weight:800;margin-bottom:6px;">🎖️ Badges gagnés</div>'+s+'</div>';}
+
+  function afterQuiz(pct,correct,total,qk){var sel=getSel();if(!sel)return;var st=load(),p=st.players[sel];p.totalPlayed+=1;p.totalCorrect+=correct;var prev=+p.bestByQuiz[qk]||0;if(pct>prev)p.bestByQuiz[qk]=pct;var n=[];if(p.totalPlayed>=1&&grant(p,'first_quiz'))n.push('first_quiz');if(pct===100&&grant(p,'perfect'))n.push('perfect');if(correct>=10&&grant(p,'ten_correct'))n.push('ten_correct');if(pct>=90&&grant(p,'champion:'+qk))n.push('champion:'+qk);save(st);updUI();showBadges(n);}
+
+  function hookResults(){var rs=document.getElementById('results-screen');if(!rs)return;var obs=new MutationObserver(function(){if(rs.classList.contains('active')){var fs=document.getElementById('final-score');if(!fs)return;var t=fs.textContent||'';var m=t.match(/(\\d+)\\s*\\/\\s*(\\d+)/);if(m){var c=parseInt(m[1],10),tot=parseInt(m[2],10);var pct=Math.round((c/tot)*100);afterQuiz(pct,c,tot,window.__lastQuizKey||'custom');}}});obs.observe(rs,{attributes:true,attributeFilter:['class']});}
+
+  function addSwitch(){var h=document.querySelector('#menu-screen .header');if(!h)return;var b=document.createElement('button');b.textContent='Changer de profil';b.className='btn btn-menu';b.style.marginTop='12px';b.onclick=function(){showProf(true);};h.appendChild(b);var tag=document.createElement('div');tag.id='current-player-tag';tag.style.marginTop='8px';tag.style.fontWeight='800';tag.style.color='#111827';tag.textContent='Aucun profil sélectionné';h.appendChild(tag);}
+
+  function startOnProfiles(){var ps=document.getElementById('profile-screen'),ms=document.getElementById('menu-screen');if(ps&&ms){ps.classList.add('active');ms.classList.remove('active');}}
+
+  function ready(fn){if(document.readyState==='complete'||document.readyState==='interactive'){setTimeout(fn,0);}else{document.addEventListener('DOMContentLoaded',fn);}}
+  ready(function(){save(load());updUI();hookResults();addSwitch();startOnProfiles();});
+
+  (function(){var orig=window.startQuiz;window.startQuiz=function(q){window.__lastQuizKey=q||'custom';if(!getSel()){showProf(true);alert('Sélectionne d’abord un profil.');return;}if(typeof orig==='function'){return orig.apply(this,arguments);}};})();
+})();
 </script>
 
 </body>
