@@ -1,25 +1,12 @@
-# QUIZZ-6EME modulaire
+# SCHOOL QUIZZ — By Flow'ZDev (pro V4)
+- Topbar sticky (mobile/tablette OK), aucun doublon de boutons, e-mail masqué.
+- Profils : clic carte = entrée directe, nom éditable en encadré, badges visibles, sélecteur de classe, reset.
+- V3 → Firestore : scores sauvegardés, badges, et **journal (20 derniers)**.
 
-- `index.html` : page principale (auth e‑mail, profils, intégration V3)
-- `v3.html` : ton menu V3
-- `css/` : styles
-- `js/` : logique (auth.js, profiles.js, etc.)
-- `db/` : base SQL (schéma + seed pour 6e)
+## Quota Firebase
+Si tu vois `auth/quota-exceeded` en test, c'est la **limite quotidienne** d'envoi des liens e-mail (plan gratuit). Solutions de test :
+- activer provisoirement "mot de passe" (Password) dans Authentication,
+- ou créer un second projet Firebase, ou attendre le lendemain.
 
-## Firebase
-- Authentication → Email/Mot de passe → **Lien envoyé par e‑mail** activé
-- Domaines autorisés : `ton-user.github.io`
-- Firestore règles :
-```
-rules_version = '2';
-service cloud.firestore {
-  match /databases/{database}/documents {
-    match /users/{uid}/data/{doc} {
-      allow read, write: if request.auth != null && request.auth.uid == uid;
-    }
-  }
-}
-```
-
-## GitHub Pages
-Déploie ce dossier à la racine du repo. Accès : `https://<user>.github.io/QUIZZ-6EME/`
+## Chemin de retour
+Dans `js/auth.js`, adapte `BASE_PATH` au chemin exact GitHub Pages si tu changes de dépôt/dossier.

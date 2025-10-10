@@ -1,4 +1,4 @@
-// Clés publiques côté client
+// js/firebase-config.js
 window.FB_CONFIG = {
   apiKey: "AIzaSyAZ2ZGUA4LYFqWpFTEGSwnKod3HhMKjrT4",
   authDomain: "quizz-6eme.firebaseapp.com",

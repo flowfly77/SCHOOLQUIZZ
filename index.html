@@ -3,78 +3,112 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>QUIZZ 6e — Connexion e‑mail + Profils + V3</title>
+  <title>SCHOOL QUIZZ — By Flow'ZDev</title>
   <link rel="stylesheet" href="./css/style.css" />
 </head>
 <body>
-  <div class="container">
-    <div class="header">
-      <h1>QUIZZ 6e — Connexion e‑mail + Profils + V3</h1>
-      <p class="muted">Auth e‑mail (lien magique), profils Firestore par utilisateur, V3 intégré.</p>
-    </div>
-
-    <div id="topbar" class="topbar" style="display:none">
-      <div class="left"><span id="who" class="pill">Non connecté</span></div>
+  <!-- Topbar sticky -->
+  <div class="topbar-fixed">
+    <div class="container row-between">
+      <div class="title">SCHOOL QUIZZ <span class="light">By Flow'ZDev</span></div>
       <div class="right">
         <button class="btn btn-ghost" onclick="window.UI.showProfiles()">Profils</button>
         <button class="btn btn-danger" onclick="window.AUTH.logout()">Se déconnecter</button>
       </div>
     </div>
+  </div>
 
+  <div class="container">
+    <!-- Auth -->
     <div id="auth-screen" class="screen active">
       <div class="card">
-        <h2>Connexion par e‑mail (lien magique)</h2>
-        <div class="row" style="margin-top:8px">
+        <h2>Connexion par e-mail</h2>
+        <div class="row">
           <input id="email" type="email" placeholder="ton@email.fr" autocomplete="email" />
           <button class="btn btn-brand" onclick="window.AUTH.sendLink()">Recevoir le lien</button>
+          <label class="inline"><input type="checkbox" id="remember" checked /> Rester connecté</label>
         </div>
-        <p id="auth-msg" class="muted" style="margin-top:8px"></p>
+        <p id="auth-msg" class="muted"></p>
       </div>
     </div>
 
+    <!-- Profils -->
     <div id="profiles-screen" class="screen">
       <div class="card">
-        <h2>Vos profils</h2>
-        <p class="muted">Chaque utilisateur connecté voit uniquement ses profils et ses stats.</p>
+        <h2>SCHOOL QUIZZ <span class="light">By Flow'ZDev</span></h2>
         <div class="profile-grid">
-          <div class="profile-card" data-id="player1" onclick="window.PROFILES.selectProfile('player1')">
+          <div class="profile-card" data-id="player1" onclick="window.PROFILES.selectAndEnter('player1')">
             <div class="emoji">🏀</div>
-            <div class="name" role="button" onclick="window.PROFILES.renameProfile(event,'player1')">Joueur 1</div>
+            <div class="name-editable" role="button" onclick="window.PROFILES.renameProfile(event,'player1')">
+              <span>Joueur 1</span> <small>modifier</small>
+            </div>
             <div class="stats" id="stats-player1">0 quiz • 0% meilleur</div>
+            <div class="badges" id="badges-player1"></div>
+            <label class="class-picker" onclick="event.stopPropagation()">
+              Classe :
+              <select onchange="window.PROFILES.changeClass(event,'player1')">
+                <option value="6e">6e</option><option value="5e">5e</option><option value="4e">4e</option><option value="3e">3e</option>
+              </select>
+            </label>
           </div>
-          <div class="profile-card" data-id="player2" onclick="window.PROFILES.selectProfile('player2')">
+
+          <div class="profile-card" data-id="player2" onclick="window.PROFILES.selectAndEnter('player2')">
             <div class="emoji">❤️</div>
-            <div class="name" role="button" onclick="window.PROFILES.renameProfile(event,'player2')">Joueur 2</div>
+            <div class="name-editable" role="button" onclick="window.PROFILES.renameProfile(event,'player2')">
+              <span>Joueur 2</span> <small>modifier</small>
+            </div>
             <div class="stats" id="stats-player2">0 quiz • 0% meilleur</div>
+            <div class="badges" id="badges-player2"></div>
+            <label class="class-picker" onclick="event.stopPropagation()">
+              Classe :
+              <select onchange="window.PROFILES.changeClass(event,'player2')">
+                <option value="6e">6e</option><option value="5e">5e</option><option value="4e">4e</option><option value="3e">3e</option>
+              </select>
+            </label>
           </div>
-          <div class="profile-card" data-id="player3" onclick="window.PROFILES.selectProfile('player3')">
+
+          <div class="profile-card" data-id="player3" onclick="window.PROFILES.selectAndEnter('player3')">
             <div class="emoji">🎮</div>
-            <div class="name" role="button" onclick="window.PROFILES.renameProfile(event,'player3')">Joueur 3</div>
+            <div class="name-editable" role="button" onclick="window.PROFILES.renameProfile(event,'player3')">
+              <span>Joueur 3</span> <small>modifier</small>
+            </div>
             <div class="stats" id="stats-player3">0 quiz • 0% meilleur</div>
+            <div class="badges" id="badges-player3"></div>
+            <label class="class-picker" onclick="event.stopPropagation()">
+              Classe :
+              <select onchange="window.PROFILES.changeClass(event,'player3')">
+                <option value="6e">6e</option><option value="5e">5e</option><option value="4e">4e</option><option value="3e">3e</option>
+              </select>
+            </label>
           </div>
-          <div class="profile-card" data-id="player4" onclick="window.PROFILES.selectProfile('player4')">
+
+          <div class="profile-card" data-id="player4" onclick="window.PROFILES.selectAndEnter('player4')">
             <div class="emoji">💃</div>
-            <div class="name" role="button" onclick="window.PROFILES.renameProfile(event,'player4')">Joueur 4</div>
+            <div class="name-editable" role="button" onclick="window.PROFILES.renameProfile(event,'player4')">
+              <span>Joueur 4</span> <small>modifier</small>
+            </div>
             <div class="stats" id="stats-player4">0 quiz • 0% meilleur</div>
+            <div class="badges" id="badges-player4"></div>
+            <label class="class-picker" onclick="event.stopPropagation()">
+              Classe :
+              <select onchange="window.PROFILES.changeClass(event,'player4')">
+                <option value="6e">6e</option><option value="5e">5e</option><option value="4e">4e</option><option value="3e">3e</option>
+              </select>
+            </label>
           </div>
         </div>
         <div class="actions">
-          <button class="btn btn-brand" onclick="window.UI.goToApp()">Continuer →</button>
           <button class="btn" onclick="window.PROFILES.resetCurrentProfile()">Réinitialiser le profil</button>
         </div>
       </div>
     </div>
 
+    <!-- App -->
     <div id="app-screen" class="screen">
-      <div class="card" style="padding:0;border-radius:16px;overflow:hidden">
-        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:#111827;color:#e5e7eb">
-          <div style="font-weight:800">Menu V3</div>
-          <div style="display:flex;gap:8px">
-            <button class="btn btn-ghost" onclick="window.UI.showProfiles()">Changer de profil</button>
-            <button class="btn btn-danger" onclick="window.AUTH.logout()">Se déconnecter</button>
-          </div>
-        </div>
-        <iframe id="v3app" title="QUIZZ 6e V3" src="./v3.html" sandbox="allow-scripts allow-same-origin allow-popups allow-forms"></iframe>
+      <div class="card appcard">
+        <div class="appheader">Menu V3</div>
+        <iframe id="v3app" title="QUIZZ 6e V3" src="./v3.html"
+          sandbox="allow-scripts allow-same-origin allow-popups allow-forms"></iframe>
       </div>
     </div>
   </div>

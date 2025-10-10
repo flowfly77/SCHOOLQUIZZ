@@ -1,6 +1,6 @@
-
-import './firebase-config.js'; // sets window.FB_CONFIG
-import './firebase.js';        // initialize Firebase app/auth/db
+// js/main.js
+import './firebase-config.js';
+import './firebase.js';
 import * as AUTH from './auth.js';
 import * as UI from './ui.js';
 import * as PROFILES from './profiles.js';
@@ -11,11 +11,11 @@ AUTH.completeFromLink().then(()=>{
   AUTH.bindAuthState();
 });
 
-// Écoute les messages venant de V3 (iframe)
+// Écoute les messages de V3
 window.addEventListener('message', (e)=>{
   const d = e?.data;
   if(!d || typeof d !== 'object') return;
   if(d.type === 'quiz-finished'){
-    PROFILES.updateFromQuiz({ key: d.key, correct: d.correct, total: d.total, title: d.title });
+    PROFILES.updateFromQuiz({ key:d.key, correct:d.correct, total:d.total, title:d.title });
   }
 });
