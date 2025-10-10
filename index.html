@@ -445,6 +445,14 @@
 @media (max-width:640px){.profile-grid{grid-template-columns:repeat(2,1fr);gap:12px;padding:0 10px;}.profile-card{max-width:100%;padding:14px;}.profile-emoji{font-size:44px;}}
 @media (max-width:420px){.profile-grid{grid-template-columns:1fr;gap:12px;}}
 
+
+/* === Code Foyer & Edition Nom === */
+.household-row{display:flex;gap:8px;justify-content:center;align-items:center;margin:8px 12px 6px;flex-wrap:wrap;}
+.household-row input{padding:10px 12px;border-radius:10px;border:2px solid #e5e7eb;min-width:220px;font-weight:600;}
+.household-row button{border:none;border-radius:10px;padding:10px 12px;font-weight:700;cursor:pointer;background:#f3f4f6;}
+.small-note{text-align:center;color:#6b7280;font-size:12px;margin-top:4px;}
+.profile-name[role="button"]{cursor:pointer;position:relative;}
+.profile-name[role="button"]::after{content:"✎";font-size:12px;margin-left:6px;opacity:.6;}
 </style>
 </head>
 <body>
@@ -456,19 +464,23 @@
 <div id="profile-screen" class="screen active">
   <div class="header">
     <h1 class="floating">👥 Choisis ton Profil</h1>
-    <p class="subtitle">4 emplacements persistants — stats et badges conservés</p>
+    </div>
+  <div class="household-row">
+    <input id="household-code-input" type="text" placeholder="Code foyer (ex: FAMILLE-DUPONT)" />
+    <button onclick="__applyHouseholdCode()">Valider le code foyer</button>
   </div>
+  <div class="small-note" id="household-note"></div>
   <div class="profile-grid">
-    <div class="profile-card" data-player="player1" onclick="__selectPlayer('player1')"><span class="profile-emoji">🏀</span><div class="profile-name">Joueur 1</div><div class="profile-stats" id="stats-player1">0 quiz • 0% meilleur</div></div>
-    <div class="profile-card" data-player="player2" onclick="__selectPlayer('player2')"><span class="profile-emoji">❤️</span><div class="profile-name">Joueur 2</div><div class="profile-stats" id="stats-player2">0 quiz • 0% meilleur</div></div>
-    <div class="profile-card" data-player="player3" onclick="__selectPlayer('player3')"><span class="profile-emoji">🎮</span><div class="profile-name">Joueur 3</div><div class="profile-stats" id="stats-player3">0 quiz • 0% meilleur</div></div>
-    <div class="profile-card" data-player="player4" onclick="__selectPlayer('player4')"><span class="profile-emoji">💃</span><div class="profile-name">Joueur 4</div><div class="profile-stats" id="stats-player4">0 quiz • 0% meilleur</div></div>
+    <div class="profile-card" data-player="player1" onclick="__selectPlayer('player1')"><span class="profile-emoji">🏀</span><div class="profile-name" role="button" onclick="__renameProfile('player1')">Joueur 1</div><div class="profile-stats" id="stats-player1">0 quiz • 0% meilleur</div></div>
+    <div class="profile-card" data-player="player2" onclick="__selectPlayer('player2')"><span class="profile-emoji">❤️</span><div class="profile-name" role="button" onclick="__renameProfile('player2')">Joueur 2</div><div class="profile-stats" id="stats-player2">0 quiz • 0% meilleur</div></div>
+    <div class="profile-card" data-player="player3" onclick="__selectPlayer('player3')"><span class="profile-emoji">🎮</span><div class="profile-name" role="button" onclick="__renameProfile('player3')">Joueur 3</div><div class="profile-stats" id="stats-player3">0 quiz • 0% meilleur</div></div>
+    <div class="profile-card" data-player="player4" onclick="__selectPlayer('player4')"><span class="profile-emoji">💃</span><div class="profile-name" role="button" onclick="__renameProfile('player4')">Joueur 4</div><div class="profile-stats" id="stats-player4">0 quiz • 0% meilleur</div></div>
   </div>
   <div class="profile-actions">
     <button class="btn-primary" onclick="__continueFromProfiles()">Continuer →</button>
     <button class="btn-secondary" onclick="__resetSelected()">Réinitialiser le profil</button>
   </div>
-  <div class="profile-tip">Astuce : ton choix est sauvegardé automatiquement.</div>
+  
 </div>
 
 <div id="menu-screen" class="screen screen">
@@ -2636,7 +2648,12 @@
 
 <script>
 (function(){
-  var STORAGE_KEY='quizProfilesV6', SELECTED_KEY='quizSelectedPlayerV6';
+  var STORAGE_KEY_BASE='quizProfilesV6', SELECTED_KEY_BASE='quizSelectedPlayerV6';
+  var HOUSEHOLD_KEY='quizHouseholdCodeV1';
+  function currentNamespace(){ try{ return localStorage.getItem(HOUSEHOLD_KEY)||''; }catch(e){ return ''; } }
+  function storageKey(){ return STORAGE_KEY_BASE+'::'+currentNamespace(); }
+  function selectedKey(){ return SELECTED_KEY_BASE+'::'+currentNamespace(); }
+  
   var Store=(function(){ try{ var k='__t'+Math.random(); localStorage.setItem(k,'1'); localStorage.removeItem(k);
     return {get:function(a){return localStorage.getItem(a);}, set:function(a,b){localStorage.setItem(a,b);}, remove:function(a){localStorage.removeItem(a);} };
   }catch(e){ var mem={}; return {get:function(a){return mem[a]||null;}, set:function(a,b){mem[a]=b;}, remove:function(a){delete mem[a];} }; } })();
@@ -2649,10 +2666,10 @@
   };
 
   function defState(){ var p={},k; for(k in INFO){ p[k]={id:k,name:INFO[k].name,icon:INFO[k].icon,totalPlayed:0,totalCorrect:0,bestByQuiz:{},badges:[]}; } return {players:p}; }
-  function load(){ try{var s=Store.get(STORAGE_KEY); return s?JSON.parse(s):defState(); }catch(e){ return defState(); } }
-  function save(st){ try{ Store.set(STORAGE_KEY, JSON.stringify(st)); }catch(e){} }
-  function getSel(){ try{ return Store.get(SELECTED_KEY); }catch(e){ return null; } }
-  function setSel(id){ try{ Store.set(SELECTED_KEY, id); }catch(e){} }
+  function load(){ try{var s=Store.get(storageKey()); return s?JSON.parse(s):defState(); }catch(e){ return defState(); } }
+  function save(st){ try{ Store.set(storageKey(), JSON.stringify(st)); }catch(e){} }
+  function getSel(){ try{ return Store.get(selectedKey()); }catch(e){ return null; } }
+  function setSel(id){ try{ Store.set(selectedKey(), id); }catch(e){} }
 
   function updStatsUI(){
     var st=load(), k;
@@ -2742,13 +2759,82 @@
     var tag=document.createElement('div'); tag.style.marginTop='8px'; tag.style.fontWeight='800'; tag.style.color='#111827'; tag.id='current-player-tag'; tag.textContent='Aucun profil sélectionné'; header.appendChild(tag);
   }
 
+  
+  function setHouseholdCode(code){
+    try{ if(code){ localStorage.setItem(HOUSEHOLD_KEY, code.trim()); } else { localStorage.removeItem(HOUSEHOLD_KEY); } }catch(e){}
+  }
+  function getHouseholdCode(){ try{ return localStorage.getItem(HOUSEHOLD_KEY)||''; }catch(e){ return ''; } }
+  
+  function stateExists(){ try{ return !!Store.get(storageKey()); }catch(e){ return false; } }
+  function refreshProfileNamesFromState(){
+    var st = load();
+    var map = {
+      player1: st.players.player1.name,
+      player2: st.players.player2.name,
+      player3: st.players.player3.name,
+      player4: st.players.player4.name
+    };
+    var cards=document.querySelectorAll('.profile-card');
+    for(var i=0;i<cards.length;i++){
+      var id = cards[i].getAttribute('data-player');
+      var el = cards[i].querySelector('.profile-name');
+      if(el && map[id]) el.textContent = map[id];
+    }
+  }
+
+function updateHouseholdNote(){
+    var n=document.getElementById('household-note'), inp=document.getElementById('household-code-input');
+    if(!n||!inp) return;
+    var code=getHouseholdCode();
+    if(code){ n.textContent='Code foyer actuel : '+code+' — les stats sont isolées par code.'; inp.value=code; }
+    else{ n.textContent='Astuce : définis un "Code foyer" pour isoler les profils par famille (ex: DUPONT-78).'; inp.value=''; }
+  }
+  window.__applyHouseholdCode=function(){
+    var inp=document.getElementById('household-code-input'); if(!inp) return;
+    var v=inp.value.trim();
+    if(v.length<3){ alert('Code trop court (≥ 3 caractères).'); return; }
+    setHouseholdCode(v);
+    // Clear selected profile for this namespace
+    try{ Store.remove(selectedKey()); }catch(e){}
+    // Initialize state only if not existing
+    if(!stateExists()) save(defState());
+    updateHouseholdNote();
+    refreshProfileNamesFromState();
+    updStatsUI();
+    alert('Code foyer appliqué ✅');
+  };
+
+  window.__renameProfile=function(id){
+    var st=load();
+    var cur=st.players[id]?st.players[id].name:'';
+    var v=prompt('Nouveau nom pour '+(cur||id)+' :', cur||'');
+    if(v && v.trim()){
+      st.players[id].name=v.trim();
+      save(st);
+      // update UI label
+      var cards=document.querySelectorAll('.profile-card');
+      for(var i=0;i<cards.length;i++){
+        if(cards[i].getAttribute('data-player')===id){
+          var nameEl=cards[i].querySelector('.profile-name');
+          if(nameEl) nameEl.textContent=v.trim();
+        }
+      }
+      // refresh tag if selected
+      var sel=getSel();
+      if(sel===id){
+        var tag=document.getElementById('current-player-tag');
+        if(tag){ tag.textContent='Profil : '+st.players[id].icon+' '+st.players[id].name; }
+      }
+    }
+  };
+
   function startOnProfiles(){
     var ps=document.getElementById('profile-screen'), ms=document.getElementById('menu-screen');
     if(ps&&ms){ ps.classList.add('active'); ms.classList.remove('active'); }
   }
 
   function ready(fn){ if(document.readyState==='complete'||document.readyState==='interactive'){ setTimeout(fn,0); } else { document.addEventListener('DOMContentLoaded', fn); } }
-  ready(function(){ save(load()); updStatsUI(); hookResults(); addSwitcher(); startOnProfiles(); });
+  ready(function(){ updateHouseholdNote(); save(load()); updStatsUI(); hookResults(); addSwitcher(); startOnProfiles(); });
 
   // Wrap startQuiz to capture key and enforce profile selection
   (function(){ var orig=window.startQuiz; window.startQuiz=function(q){ window.__lastQuizKey=q||'custom';
