@@ -427,37 +427,59 @@
             animation: float 3s ease-in-out infinite;
         }
     
-/* === PROFILS & BADGES (RECODE) === */
+/* === PROFILS & BADGES (RECODE v3) === */
 .screen{display:none;}
 .screen.active{display:block;}
 
 .profile-grid {
   display:grid;
-  grid-template-columns: repeat(2, 1fr);
-  grid-gap:25px;
+  grid-template-columns: repeat(2, minmax(140px, 1fr));
+  grid-gap:18px;
   justify-items:center;
-  align-items:center;
-  margin:20px auto 40px;
+  align-items:stretch;
+  margin:16px auto 28px;
   max-width: 560px;
+  padding: 0 12px;
 }
 
-.profile-card{background:#fff;border-radius:20px;padding:18px;text-align:center;cursor:pointer;transition:all .25s ease;border:3px solid transparent;box-shadow:0 4px 12px rgba(0,0,0,.08);user-select:none;width: 260px;}
+.profile-card{
+  background:#fff;
+  border-radius:20px;
+  padding:18px;
+  text-align:center;
+  cursor:pointer;
+  transition:all .25s ease;
+  border:3px solid transparent;
+  box-shadow:0 4px 12px rgba(0,0,0,.08);
+  user-select:none;
+  width: 100%;
+  max-width: 280px;
+}
 .profile-card:hover{transform:translateY(-3px) scale(1.015);border-color:#667eea;}
 .profile-card.active{border-color:#10b981;box-shadow:0 0 0 3px rgba(16,185,129,.25) inset;}
 .profile-emoji{font-size:54px;display:block;margin-bottom:10px;}
 .profile-name{font-weight:800;font-size:18px;color:#111827;}
 .profile-stats{margin-top:6px;font-size:13px;color:#6b7280;}
-.profile-actions{display:flex;gap:10px;margin-top:8px;max-width:560px;margin-left:auto;margin-right:auto;}
+.profile-actions{display:flex;gap:10px;margin-top:8px;max-width:560px;margin-left:auto;margin-right:auto;padding:0 12px;}
 .profile-actions button{flex:1;border:none;border-radius:12px;padding:10px;font-weight:700;cursor:pointer;}
 .btn-primary{background:#667eea;color:#fff;}
 .btn-secondary{background:#e5e7eb;color:#111827;}
-.small-row{display:flex;gap:10px;justify-content:center;margin-top:10px;}
-.small-row button{border:none;border-radius:10px;padding:8px 10px;cursor:pointer;background:#f3f4f6;}
 .badge-chip{display:inline-flex;align-items:center;gap:6px;background:#f3f4f6;color:#111827;border-radius:999px;padding:6px 10px;font-size:12px;font-weight:700;margin:4px;border:2px solid #e5e7eb;}
 .badge-chip .icon{font-size:16px;}
 #badge-earnings{margin-top:18px;}
-.profile-tip{background:#e3f7c3;border:2px solid #a3e635;padding:12px;border-radius:14px;color:#3f6212;font-weight:700;text-align:center;}
-.debug-note{font-size:12px;color:#6b7280;text-align:center;margin-top:6px;}
+.profile-tip{background:#e3f7c3;border:2px solid #a3e635;padding:12px;border-radius:14px;color:#3f6212;font-weight:700;text-align:center;margin: 10px 12px 0;}
+@media (max-width: 520px){
+  .profile-grid{
+    grid-template-columns: repeat(2, minmax(120px,1fr));
+    grid-gap:12px;
+    max-width: 100%;
+  }
+  .profile-card{ max-width: 100%; padding:14px; }
+  .profile-emoji{ font-size:42px; }
+}
+@media (max-width: 360px){
+  .profile-grid{ grid-template-columns: 1fr; grid-gap:10px; }
+}
 
 </style>
 </head>
@@ -467,7 +489,7 @@
     <!-- ========================================= -->
     
 <!-- ========================================= -->
-<!-- ÉCRAN 1 : PROFILS (RECODE) -->
+<!-- ÉCRAN 1 : PROFILS (RECODE v3) -->
 <!-- ========================================= -->
 <div id="profile-screen" class="screen active">
   <div class="header">
@@ -502,13 +524,7 @@
     <button class="btn-primary" onclick="__continueFromProfiles()">Continuer →</button>
     <button class="btn-secondary" onclick="__resetSelected()">Réinitialiser le profil</button>
   </div>
-  <div class="small-row">
-    <button onclick="__exportStats()">Exporter</button>
-    <button onclick="document.getElementById('importFile').click()">Importer</button>
-    <input id="importFile" type="file" accept=".json" style="display:none" onchange="__importStats(this.files[0])" />
-  </div>
-  <div class="profile-tip" style="margin-top:14px;">Astuce : ton choix est sauvegardé automatiquement.</div>
-  <div class="debug-note" id="storage-warning"></div>
+  <div class="profile-tip">Astuce : ton choix est sauvegardé automatiquement.</div>
 </div>
 
 <div id="menu-screen" class="screen active">
@@ -2675,47 +2691,26 @@
     </script>
 
 <script>
-/* ====== RECODE: Profils + Badges + Storage Hardened ====== */
+/* ====== RECODE v3: Profils + Badges + Always start on Profiles ====== */
 (function(){
-  // ---- STORAGE ENGINE (with detection + warnings + fallback) ----
-  var STORAGE_KEY='quizProfilesV2'; // bump version to avoid conflicts
-  var SELECTED_KEY='quizSelectedPlayerV2';
+  var STORAGE_KEY='quizProfilesV3';
+  var SELECTED_KEY='quizSelectedPlayerV3';
   var storageOk = true;
   var Store = (function(){
     try{
       var k='__probe_'+Math.random();
-      window.localStorage.setItem(k,'1');
-      window.localStorage.removeItem(k);
-      return {
-        get: function(key){ return window.localStorage.getItem(key); },
-        set: function(key,val){ window.localStorage.setItem(key, val); },
-        remove: function(key){ window.localStorage.removeItem(key); }
-      };
+      window.localStorage.setItem(k,'1'); window.localStorage.removeItem(k);
+      return { get:function(key){return localStorage.getItem(key);},
+               set:function(key,val){localStorage.setItem(key,val);},
+               remove:function(key){localStorage.removeItem(key);} };
     }catch(e){
-      storageOk = false;
-      var mem = {};
-      return {
-        get: function(key){ return mem[key] || null; },
-        set: function(key,val){ mem[key]=val; },
-        remove: function(key){ delete mem[key]; }
-      };
+      storageOk=false; var mem={};
+      return { get:function(k){return mem[k]||null;},
+               set:function(k,v){mem[k]=v;},
+               remove:function(k){delete mem[k];} };
     }
   })();
 
-  function warnIfNoStorage(){
-    var w = document.getElementById('storage-warning');
-    if(!w) return;
-    if(!storageOk){
-      w.textContent = "⚠️ Sauvegarde désactivée : votre navigateur a refusé l'accès au stockage. Hébergez le fichier en ligne (https) ou utilisez Exporter/Importer.";
-    }else{
-      // Additional note for file:// origins
-      if(location.protocol==='file:'){
-        w.textContent = "ℹ️ Astuce : en 'file://', la sauvegarde est propre au chemin du fichier. Déplacez-le ou renommez-le = nouvelle base de données.";
-      }
-    }
-  }
-
-  // ---- MODEL ----
   var PLAYER_INFOS={
     player1:{name:'Joueur 1',icon:'🏀'},
     player2:{name:'Joueur 2',icon:'❤️'},
@@ -2729,68 +2724,28 @@
     for(k in PLAYER_INFOS){
       players[k]={id:k,name:PLAYER_INFOS[k].name,icon:PLAYER_INFOS[k].icon,totalPlayed:0,totalCorrect:0,bestByQuiz:{},badges:[]};
     }
-    return {players:players, schema:'v2'};
+    return {players:players, schema:'v3'};
   }
   function loadState(){
-    try{
-      var raw = Store.get(STORAGE_KEY);
-      if(!raw) return defaultState();
-      var st = JSON.parse(raw);
-      // migrate if needed
-      if(!st.players){ return defaultState(); }
-      return st;
-    }catch(e){ return defaultState(); }
+    try{ var raw=Store.get(STORAGE_KEY); return raw?JSON.parse(raw):defaultState(); }
+    catch(e){ return defaultState(); }
   }
-  function saveState(st){
-    try{ Store.set(STORAGE_KEY, JSON.stringify(st)); }catch(e){}
-  }
+  function saveState(st){ try{ Store.set(STORAGE_KEY, JSON.stringify(st)); }catch(e){} }
   function getSelected(){ try{ return Store.get(SELECTED_KEY); }catch(e){ return null; } }
   function setSelected(id){ try{ Store.set(SELECTED_KEY, id); }catch(e){} }
 
-  // ---- EXPORT / IMPORT ----
-  window.__exportStats = function(){
-    var data = JSON.stringify({selected:getSelected(), state: loadState()}, null, 2);
-    var blob = new Blob([data], {type:'application/json'});
-    var url = URL.createObjectURL(blob);
-    var a = document.createElement('a');
-    a.href = url; a.download = 'quiz6eme_stats.json'; a.click();
-    setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
-  };
-  window.__importStats = function(file){
-    if(!file) return;
-    var reader = new FileReader();
-    reader.onload = function(){
-      try{
-        var obj = JSON.parse(reader.result);
-        if(obj && obj.state && obj.state.players){
-          saveState(obj.state);
-          if(obj.selected){ setSelected(obj.selected); }
-          updateProfileStatsUI();
-          alert('Import terminé ✅');
-        }else{
-          alert('Fichier invalide');
-        }
-      }catch(e){ alert('Import impossible'); }
-    };
-    reader.readAsText(file);
-  };
-
-  // ---- UI ----
   function updateProfileStatsUI(){
     var st=loadState(), k;
-    for(k in PLAYER_INFOS){
-      var p=st.players[k];
-      var best = 0, q;
-      for(q in p.bestByQuiz){ var v = Number(p.bestByQuiz[q]||0); if(v>best) best=v; }
+    for(k in st.players){
+      var p=st.players[k], best=0, q;
+      for(q in p.bestByQuiz){ var v=Number(p.bestByQuiz[q]||0); if(v>best) best=v; }
       var el=document.getElementById('stats-'+k);
       if(el) el.textContent = p.totalPlayed+' quiz • '+best+'% meilleur';
     }
     var sel=getSelected();
     var cards=document.querySelectorAll('.profile-card');
     for(var i=0;i<cards.length;i++){
-      var c=cards[i];
-      if(c.getAttribute('data-player')===sel){ c.classList.add('active'); }
-      else{ c.classList.remove('active'); }
+      var c=cards[i]; if(c.getAttribute('data-player')===sel) c.classList.add('active'); else c.classList.remove('active');
     }
   }
   function showProfileScreen(visible){
@@ -2800,13 +2755,13 @@
     if(visible){ ps.classList.add('active'); ms.classList.remove('active'); }
     else{ ps.classList.remove('active'); ms.classList.add('active'); }
   }
-  window.__selectPlayer = function(id){ setSelected(id); updateProfileStatsUI(); };
-  window.__continueFromProfiles = function(){
-    var sel=getSelected() || 'player1'; setSelected(sel); showProfileScreen(false);
+  window.__selectPlayer=function(id){ setSelected(id); updateProfileStatsUI(); };
+  window.__continueFromProfiles=function(){
+    var sel=getSelected()||'player1'; setSelected(sel); showProfileScreen(false);
     var tag=document.getElementById('current-player-tag');
     if(tag){ var p=loadState().players[sel]; tag.textContent='Profil : '+p.icon+' '+p.name; }
   };
-  window.__resetSelected = function(){
+  window.__resetSelected=function(){
     var sel=getSelected(); if(!sel){ alert("Sélectionne un profil d'abord."); return; }
     if(confirm('Réinitialiser toutes les stats et badges de ce profil ?')){
       var st=loadState();
@@ -2815,122 +2770,82 @@
     }
   };
 
-  // ---- BADGES ----
-  var BADGE_DEFS = {
-    first_quiz:{label:'Premier pas',icon:'🥇',desc:'1er quiz terminé'},
-    perfect:{label:'Parfait !',icon:'💯',desc:'Score 100%'},
-    ten_correct:{label:'10 bonnes réponses',icon:'🔟',desc:'Au moins 10 bonnes réponses'},
-    champion:function(q){ return {label:'Champion '+q,icon:'🏆',desc:'≥ 90% en '+q}; }
+  var BADGE_DEFS={
+    first_quiz:{label:'Premier pas',icon:'🥇'},
+    perfect:{label:'Parfait !',icon:'💯'},
+    ten_correct:{label:'10 bonnes réponses',icon:'🔟'},
+    champion:function(q){ return {label:'Champion '+q,icon:'🏆'}; }
   };
-  function grantBadge(p, code){
-    if(p.badges.indexOf(code)===-1){ p.badges.push(code); return true; }
-    return false;
-  }
-  function renderNewBadges(codes, quizKey){
-    var wrap=document.getElementById('badge-earnings');
-    if(!wrap) return;
+  function grantBadge(p, code){ if(p.badges.indexOf(code)===-1){ p.badges.push(code); return true; } return false; }
+  function renderNewBadges(codes){
+    var wrap=document.getElementById('badge-earnings'); if(!wrap) return;
     if(!codes||codes.length===0){ wrap.innerHTML=''; return; }
     var chips='', i;
-    for(i=0;i<codes.length;i++){
-      var code=codes[i], conf;
+    for(i=0;i<codes.length;i++){ var code=codes[i], conf;
       if(code.indexOf('champion:')===0){ var q=code.split(':')[1]; conf=BADGE_DEFS.champion(q); }
       else{ conf=BADGE_DEFS[code]; }
-      chips += '<span class="badge-chip"><span class="icon">'+conf.icon+'</span>'+conf.label+'</span>';
+      chips+='<span class="badge-chip"><span class="icon">'+conf.icon+'</span>'+conf.label+'</span>';
     }
-    wrap.innerHTML = '<div style="margin-top:8px;text-align:center;"><div style="font-weight:800;margin-bottom:6px;">🎖️ Badges gagnés</div>'+chips+'</div>';
+    wrap.innerHTML='<div style="margin-top:8px;text-align:center;"><div style="font-weight:800;margin-bottom:6px;">🎖️ Badges gagnés</div>'+chips+'</div>';
   }
   function updateStatsAfterQuiz(percent, correctCount, total, quizKey){
     var sel=getSelected(); if(!sel) return;
-    var st=loadState(); var p=st.players[sel];
-    p.totalPlayed += 1; p.totalCorrect += correctCount;
-    var prev = Number(p.bestByQuiz[quizKey]||0); if(percent>prev) p.bestByQuiz[quizKey]=percent;
-
+    var st=loadState(), p=st.players[sel];
+    p.totalPlayed+=1; p.totalCorrect+=correctCount;
+    var prev=Number(p.bestByQuiz[quizKey]||0); if(percent>prev) p.bestByQuiz[quizKey]=percent;
     var newly=[];
     if(p.totalPlayed>=1 && grantBadge(p,'first_quiz')) newly.push('first_quiz');
     if(percent===100 && grantBadge(p,'perfect')) newly.push('perfect');
     if(correctCount>=10 && grantBadge(p,'ten_correct')) newly.push('ten_correct');
     if(percent>=90 && grantBadge(p,'champion:'+quizKey)) newly.push('champion:'+quizKey);
-
-    saveState(st); updateProfileStatsUI(); renderNewBadges(newly, quizKey);
+    saveState(st); updateProfileStatsUI(); renderNewBadges(newly);
   }
 
-  // ---- RESULTS HOOK ----
   function initResultsObserver(){
-    var resultsScreen=document.getElementById('results-screen');
-    if(!resultsScreen) return;
-    var obs = new MutationObserver(function(){
+    var resultsScreen=document.getElementById('results-screen'); if(!resultsScreen) return;
+    var obs=new MutationObserver(function(){
       if(resultsScreen.classList.contains('active')){
-        var fs=document.getElementById('final-score');
-        if(!fs) return;
-        var txt=fs.textContent||'';
-        var m=txt.match(/(\d+)\s*\/\s*(\d+)/);
-        if(m){
-          var correct=parseInt(m[1],10), total=parseInt(m[2],10);
-          var percent = Math.round((correct/total)*100);
-          updateStatsAfterQuiz(percent, correct, total, window.__lastQuizKey||'custom');
-        }
+        var fs=document.getElementById('final-score'); if(!fs) return;
+        var txt=fs.textContent||''; var m=txt.match(/(\d+)\s*\/\s*(\d+)/);
+        if(m){ var c=parseInt(m[1],10), t=parseInt(m[2],10); var pct=Math.round((c/t)*100);
+          updateStatsAfterQuiz(pct, c, t, window.__lastQuizKey||'custom'); }
       }
     });
     obs.observe(resultsScreen,{attributes:true,attributeFilter:['class']});
   }
 
   function addProfileSwitcher(){
-    var header=document.querySelector('#menu-screen .header');
-    if(!header) return;
-    var btn=document.createElement('button');
-    btn.textContent='Changer de profil';
-    btn.className='btn btn-menu';
-    btn.style.marginTop='12px';
-    btn.onclick=function(){ showProfileScreen(true); };
-    header.appendChild(btn);
-
-    var tag=document.createElement('div');
-    tag.style.marginTop='8px'; tag.style.fontWeight='800'; tag.style.color='#111827';
-    tag.id='current-player-tag';
-    header.appendChild(tag);
-    var sel=getSelected();
-    if(sel){ var p=loadState().players[sel]; tag.textContent='Profil : '+p.icon+' '+p.name; }
-    else { tag.textContent='Aucun profil sélectionné'; }
+    var header=document.querySelector('#menu-screen .header'); if(!header) return;
+    var btn=document.createElement('button'); btn.textContent='Changer de profil'; btn.className='btn btn-menu'; btn.style.marginTop='12px';
+    btn.onclick=function(){ showProfileScreen(true); }; header.appendChild(btn);
+    var tag=document.createElement('div'); tag.style.marginTop='8px'; tag.style.fontWeight='800'; tag.style.color='#111827'; tag.id='current-player-tag';
+    header.appendChild(tag); tag.textContent='Aucun profil sélectionné';
   }
 
   function ensureFirstScreen(){
-    var has=getSelected();
-    var ps=document.getElementById('profile-screen');
-    var ms=document.getElementById('menu-screen');
-    if(!ps||!ms) return;
-    if(has){ ps.classList.remove('active'); ms.classList.add('active'); }
-    else{ ps.classList.add('active'); ms.classList.remove('active'); }
+    var ps=document.getElementById('profile-screen'); var ms=document.getElementById('menu-screen'); if(!ps||!ms) return;
+    // Toujours démarrer sur l'écran Profils
+    ps.classList.add('active'); ms.classList.remove('active');
   }
 
-  function docReady(fn){
-    if(document.readyState==='complete' || document.readyState==='interactive'){ setTimeout(fn,0); }
-    else{ document.addEventListener('DOMContentLoaded', fn); }
-  }
-
+  function docReady(fn){ if(document.readyState==='complete'||document.readyState==='interactive'){setTimeout(fn,0);} else {document.addEventListener('DOMContentLoaded',fn);} }
   docReady(function(){
-    warnIfNoStorage();
-    saveState(loadState()); // ensure structure
+    saveState(loadState());
     updateProfileStatsUI();
     initResultsObserver();
     addProfileSwitcher();
     ensureFirstScreen();
   });
 
-  // Remember quiz key
   (function(){
     var orig=window.startQuiz;
     window.startQuiz=function(quizKey){
-      window.__lastQuizKey = quizKey || 'custom';
-      if(!getSelected()){
-        showProfileScreen(true);
-        alert('Sélectionne d’abord un profil.');
-        return;
-      }
+      window.__lastQuizKey=quizKey||'custom';
+      if(!getSelected()){ showProfileScreen(true); alert('Sélectionne d’abord un profil.'); return; }
       if(typeof orig==='function'){ return orig.apply(this, arguments); }
     };
   })();
-
-})(); 
+})();
 </script>
 
 </body>
