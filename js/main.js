@@ -7,11 +7,8 @@ import * as PROFILES from './profiles.js';
 
 window.UI = { showProfiles: UI.showProfiles, goToApp: ()=>UI.showApp() };
 
-AUTH.completeFromLink().then(()=>{
-  AUTH.bindAuthState();
-});
+AUTH.completeFromLink().then(()=> AUTH.bindAuthState() );
 
-// Écoute les messages de V3
 window.addEventListener('message', (e)=>{
   const d = e?.data;
   if(!d || typeof d !== 'object') return;

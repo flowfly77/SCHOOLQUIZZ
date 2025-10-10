@@ -1,8 +1,8 @@
-<!-- À coller dans V3 quand le quiz se termine -->
+
 <script>
-  function envoyerResultatQuiz(key, bonnesReponses, totalQuestions, titre) {
-    window.parent.postMessage({ type:'quiz-finished', key, correct:bonnesReponses, total:totalQuestions, title:titre||'' }, '*');
+  function envoyerResultatQuiz(key, bonnesReponses, totalQuestions, titre){
+    window.parent && window.parent.postMessage({ 
+      type:'quiz-finished', key, correct:Number(bonnesReponses)||0, total:Number(totalQuestions)||0, title:titre||'' 
+    }, '*');
   }
-  // Exemple :
-  // envoyerResultatQuiz('anglais_verbes', score, nbQuestions, 'Anglais — Verbes (6e)');
 </script>

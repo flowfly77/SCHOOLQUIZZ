@@ -2421,7 +2421,6 @@
         // LOGIQUE DU JEU
         // ==========================================
         let currentQuiz = null;
-        let currentQuizId = null;
         let questions = [];
         let currentQuestionIndex = 0;
         let score = 0;
@@ -2432,7 +2431,6 @@
         }
 
         function startQuiz(quizId) {
-            currentQuizId = quizId;
             currentQuiz = quizData[quizId];
             
             if (!currentQuiz || !currentQuiz.questions || currentQuiz.questions.length === 0) {
@@ -2594,21 +2592,25 @@
                 }, i * 20);
             }
         }
-    
-        // --- Remontée du score au parent (Profils) ---
-        function envoyerResultatQuiz(key, bonnesReponses, totalQuestions, titre){
-            try{
-                window.parent && window.parent.postMessage({
-                    type:'quiz-finished',
-                    key: key || (currentQuizId||'quiz'),
-                    correct: Number(bonnesReponses)||0,
-                    total: Number(totalQuestions)||0,
-                    title: titre || (currentQuiz && currentQuiz.title)||''
-                }, '*');
-            }catch(e){ /* silencieux */ }
-            // Envoie aux profils
-            envoyerResultatQuiz(currentQuizId, score, questions.length, currentQuiz && currentQuiz.title);
-        }
     </script>
+
+<!-- Bridge : V3 -> Parent (envoi du score) -->
+<script>
+(function(){
+  function envoyerResultatQuiz(key, bonnesReponses, totalQuestions, titre){
+    try {
+      window.parent && window.parent.postMessage({
+        type:'quiz-finished',
+        key: key,
+        correct: Number(bonnesReponses)||0,
+        total: Number(totalQuestions)||0,
+        title: titre || ''
+      }, '*');
+    } catch(e){ /* ignore */ }
+  }
+  window.envoyerResultatQuiz = envoyerResultatQuiz;
+})();
+</script>
+
 </body>
 </html>

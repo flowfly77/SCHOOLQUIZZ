@@ -7,7 +7,6 @@
   <link rel="stylesheet" href="./css/style.css" />
 </head>
 <body>
-  <!-- Topbar sticky -->
   <div class="topbar-fixed">
     <div class="container row-between">
       <div class="title">SCHOOL QUIZZ <span class="light">By Flow'ZDev</span></div>
@@ -19,10 +18,9 @@
   </div>
 
   <div class="container">
-    <!-- Auth -->
     <div id="auth-screen" class="screen active">
       <div class="card">
-        <h2>Connexion par e-mail</h2>
+        <h2>Connexion par e‑mail</h2>
         <div class="row">
           <input id="email" type="email" placeholder="ton@email.fr" autocomplete="email" />
           <button class="btn btn-brand" onclick="window.AUTH.sendLink()">Recevoir le lien</button>
@@ -32,20 +30,16 @@
       </div>
     </div>
 
-    <!-- Profils -->
     <div id="profiles-screen" class="screen">
       <div class="card">
         <h2>SCHOOL QUIZZ <span class="light">By Flow'ZDev</span></h2>
         <div class="profile-grid">
           <div class="profile-card" data-id="player1" onclick="window.PROFILES.selectAndEnter('player1')">
             <div class="emoji">🏀</div>
-            <div class="name-editable" role="button" onclick="window.PROFILES.renameProfile(event,'player1')">
-              <span>Joueur 1</span> <small>modifier</small>
-            </div>
+            <div class="name-editable" role="button" onclick="window.PROFILES.renameProfile(event,'player1')"><span>Joueur 1</span> <small>modifier</small></div>
             <div class="stats" id="stats-player1">0 quiz • 0% meilleur</div>
             <div class="badges" id="badges-player1"></div>
-            <label class="class-picker" onclick="event.stopPropagation()">
-              Classe :
+            <label class="class-picker" onclick="event.stopPropagation()">Classe :
               <select onchange="window.PROFILES.changeClass(event,'player1')">
                 <option value="6e">6e</option><option value="5e">5e</option><option value="4e">4e</option><option value="3e">3e</option>
               </select>
@@ -54,13 +48,10 @@
 
           <div class="profile-card" data-id="player2" onclick="window.PROFILES.selectAndEnter('player2')">
             <div class="emoji">❤️</div>
-            <div class="name-editable" role="button" onclick="window.PROFILES.renameProfile(event,'player2')">
-              <span>Joueur 2</span> <small>modifier</small>
-            </div>
+            <div class="name-editable" role="button" onclick="window.PROFILES.renameProfile(event,'player2')"><span>Joueur 2</span> <small>modifier</small></div>
             <div class="stats" id="stats-player2">0 quiz • 0% meilleur</div>
             <div class="badges" id="badges-player2"></div>
-            <label class="class-picker" onclick="event.stopPropagation()">
-              Classe :
+            <label class="class-picker" onclick="event.stopPropagation()">Classe :
               <select onchange="window.PROFILES.changeClass(event,'player2')">
                 <option value="6e">6e</option><option value="5e">5e</option><option value="4e">4e</option><option value="3e">3e</option>
               </select>
@@ -69,13 +60,10 @@
 
           <div class="profile-card" data-id="player3" onclick="window.PROFILES.selectAndEnter('player3')">
             <div class="emoji">🎮</div>
-            <div class="name-editable" role="button" onclick="window.PROFILES.renameProfile(event,'player3')">
-              <span>Joueur 3</span> <small>modifier</small>
-            </div>
+            <div class="name-editable" role="button" onclick="window.PROFILES.renameProfile(event,'player3')"><span>Joueur 3</span> <small>modifier</small></div>
             <div class="stats" id="stats-player3">0 quiz • 0% meilleur</div>
             <div class="badges" id="badges-player3"></div>
-            <label class="class-picker" onclick="event.stopPropagation()">
-              Classe :
+            <label class="class-picker" onclick="event.stopPropagation()">Classe :
               <select onchange="window.PROFILES.changeClass(event,'player3')">
                 <option value="6e">6e</option><option value="5e">5e</option><option value="4e">4e</option><option value="3e">3e</option>
               </select>
@@ -84,13 +72,10 @@
 
           <div class="profile-card" data-id="player4" onclick="window.PROFILES.selectAndEnter('player4')">
             <div class="emoji">💃</div>
-            <div class="name-editable" role="button" onclick="window.PROFILES.renameProfile(event,'player4')">
-              <span>Joueur 4</span> <small>modifier</small>
-            </div>
+            <div class="name-editable" role="button" onclick="window.PROFILES.renameProfile(event,'player4')"><span>Joueur 4</span> <small>modifier</small></div>
             <div class="stats" id="stats-player4">0 quiz • 0% meilleur</div>
             <div class="badges" id="badges-player4"></div>
-            <label class="class-picker" onclick="event.stopPropagation()">
-              Classe :
+            <label class="class-picker" onclick="event.stopPropagation()">Classe :
               <select onchange="window.PROFILES.changeClass(event,'player4')">
                 <option value="6e">6e</option><option value="5e">5e</option><option value="4e">4e</option><option value="3e">3e</option>
               </select>
@@ -103,12 +88,10 @@
       </div>
     </div>
 
-    <!-- App -->
     <div id="app-screen" class="screen">
       <div class="card appcard">
         <div class="appheader">Menu V3</div>
-        <iframe id="v3app" title="QUIZZ 6e V3" src="./v3.html"
-          sandbox="allow-scripts allow-same-origin allow-popups allow-forms"></iframe>
+        <iframe id="v3app" title="QUIZZ 6e V3" src="./v3.html" sandbox="allow-scripts allow-same-origin allow-popups allow-forms"></iframe>
       </div>
     </div>
   </div>
