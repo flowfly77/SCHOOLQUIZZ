@@ -5,35 +5,26 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>SCHOOL QUIZZ — By Flow'ZDev</title>
   <link rel="stylesheet" href="./css/style.css" />
+  <link rel="stylesheet" href="./css/v3.css" />
 </head>
 <body>
-  <div class="topbar-fixed">
-    <div class="container row-between">
-      <div class="title">SCHOOL QUIZZ <span class="light">By Flow'ZDev</span></div>
-      <div class="right">
-        <button class="btn btn-ghost" onclick="window.UI.showProfiles()">Profils</button>
-        <button class="btn btn-danger" onclick="window.AUTH.logout()">Se déconnecter</button>
-      </div>
-    </div>
-  </div>
-
   <div class="container">
-    <div id="auth-screen" class="screen active">
+    <section id="auth-screen" class="screen active">
       <div class="card">
         <h2>Connexion par e‑mail</h2>
-        <div class="row">
+        <div class="row" style="margin-top:8px">
           <input id="email" type="email" placeholder="ton@email.fr" autocomplete="email" />
           <button class="btn btn-brand" onclick="window.AUTH.sendLink()">Recevoir le lien</button>
           <label class="inline"><input type="checkbox" id="remember" checked /> Rester connecté</label>
         </div>
-        <p id="auth-msg" class="muted"></p>
+        <p id="auth-msg" class="muted" style="margin-top:8px"></p>
       </div>
-    </div>
+    </section>
 
-    <div id="profiles-screen" class="screen">
+    <section id="profiles-screen" class="screen">
       <div class="card">
-        <h2>SCHOOL QUIZZ <span class="light">By Flow'ZDev</span></h2>
-        <div class="profile-grid">
+        <h2>SCHOOL QUIZZ <span style="opacity:.7">By Flow'ZDev</span></h2>
+        <div class="profile-grid" style="margin-top:12px">
           <div class="profile-card" data-id="player1" onclick="window.PROFILES.selectAndEnter('player1')">
             <div class="emoji">🏀</div>
             <div class="name-editable" role="button" onclick="window.PROFILES.renameProfile(event,'player1')"><span>Joueur 1</span> <small>modifier</small></div>
@@ -45,7 +36,6 @@
               </select>
             </label>
           </div>
-
           <div class="profile-card" data-id="player2" onclick="window.PROFILES.selectAndEnter('player2')">
             <div class="emoji">❤️</div>
             <div class="name-editable" role="button" onclick="window.PROFILES.renameProfile(event,'player2')"><span>Joueur 2</span> <small>modifier</small></div>
@@ -57,7 +47,6 @@
               </select>
             </label>
           </div>
-
           <div class="profile-card" data-id="player3" onclick="window.PROFILES.selectAndEnter('player3')">
             <div class="emoji">🎮</div>
             <div class="name-editable" role="button" onclick="window.PROFILES.renameProfile(event,'player3')"><span>Joueur 3</span> <small>modifier</small></div>
@@ -69,7 +58,6 @@
               </select>
             </label>
           </div>
-
           <div class="profile-card" data-id="player4" onclick="window.PROFILES.selectAndEnter('player4')">
             <div class="emoji">💃</div>
             <div class="name-editable" role="button" onclick="window.PROFILES.renameProfile(event,'player4')"><span>Joueur 4</span> <small>modifier</small></div>
@@ -84,16 +72,20 @@
         </div>
         <div class="actions">
           <button class="btn" onclick="window.PROFILES.resetCurrentProfile()">Réinitialiser le profil</button>
+          <button class="btn" onclick="window.AUTH.logout()">Se déconnecter</button>
         </div>
       </div>
-    </div>
+    </section>
 
-    <div id="app-screen" class="screen">
-      <div class="card appcard">
-        <div class="appheader">Menu V3</div>
-        <iframe id="v3app" title="QUIZZ 6e V3" src="./v3.html" sandbox="allow-scripts allow-same-origin allow-popups allow-forms"></iframe>
+    <section id="quiz-screen" class="screen">
+      <div class="card quiz-card">
+        <div class="row" style="justify-content:space-between;margin-bottom:8px">
+          <button class="btn" onclick="window.UI.showProfiles()">← Profils</button>
+          <button class="btn" onclick="window.AUTH.logout()">Se déconnecter</button>
+        </div>
+        <div id="quiz-root"></div>
       </div>
-    </div>
+    </section>
   </div>
 
   <script type="module" src="./js/main.js"></script>

@@ -4,8 +4,9 @@ import './firebase.js';
 import * as AUTH from './auth.js';
 import * as UI from './ui.js';
 import * as PROFILES from './profiles.js';
+import './integrator.js';
 
-window.UI = { showProfiles: UI.showProfiles, goToApp: ()=>UI.showApp() };
+window.UI = UI;
 
 AUTH.completeFromLink().then(()=> AUTH.bindAuthState() );
 
